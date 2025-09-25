@@ -30,6 +30,9 @@ const App = () => {
   const [trendingMovies,setTrendingMovies]=useState([]);
   const [isLoading,setIsLoading]=useState(false)
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [genres, setGenres] = useState({});
+  const [page, setPage] = useState(1);
+
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -40,12 +43,14 @@ const App = () => {
   }, [searchTerm]);
 
 
-  const fetchMovies= async(query='')=>{
+  const fetchMovies= async(query='',pageNum=1
+
+  )=>{
     setIsLoading(true);
     setErrorMessage('');
     try{
-      const endpoint =query ?`${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-      :`${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+      const endpoint =query ?`${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${pageNum}`
+      :`${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${pageNum}`;
       const response = await fetch(endpoint,API_OPTIONS);
       if(!response.ok){
         throw new Error('Network response was not ok');
@@ -71,6 +76,23 @@ const App = () => {
       setIsLoading(false);
     }
   }
+  const fetchGenres = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/genre/movie/list?language=en-US`, API_OPTIONS);
+    const data = await response.json();
+    if (data.genres) {
+      // Convert array to object { 28: "Action", 12: "Adventure", ... }
+      const genreMap = data.genres.reduce((acc, genre) => {
+        acc[genre.id] = genre.name;
+        return acc;
+      }, {});
+      setGenres(genreMap);
+    }
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+  }
+};
+
   const loadTrendingMovies= async()=>{
     try{
       const movies = await getTrendingMovies();
@@ -81,10 +103,11 @@ const App = () => {
   }
 
   useEffect(()=>{
-    fetchMovies(debouncedSearchTerm);
-  },[debouncedSearchTerm])
+    fetchMovies(debouncedSearchTerm,page);
+  },[debouncedSearchTerm,page])
   useEffect(()=>{
-    loadTrendingMovies();
+    loadTrendingMovies()
+    fetchGenres();
   },[])
   return (
     <main>
@@ -123,15 +146,36 @@ const App = () => {
           ) : (
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
               {movieList.map((movie)=>(
-                <MovieCard key={movie.id} movie={movie}/>
+                <MovieCard key={movie.id} movie={movie} genres={genres}/>
               ))}
             </ul>
           )}
         </section>
+        {/* <button className='mt-6 w-full bg-light-200 text-white py-2 rounded-lg hover:bg-primary transition cursor-pointer' onClick={data.pages+1}>Load More</button> */}
+        <div className='flex justify-center gap-4'>
+          <button
+            className='prev mt-6 w-20 bg-light-200 text-white py-2 rounded-lg hover:bg-primary transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          <button
+            className='next mt-6 w-20 bg-light-200 text-white py-2 rounded-lg hover:bg-primary transition cursor-pointer'
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Next
+          </button>
+
+        </div>
+        <p className="text-center text-light-200 mt-4">Page {page}</p>
+
+
       </div>
     </main>
   )
 }
+
 
 
 export default App
