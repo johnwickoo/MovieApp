@@ -267,7 +267,7 @@ const App = () => {
           ) : errorMessage ? (
             <p className="error">{errorMessage}</p>
           ) : (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 h-full">
               {movieList.map((movie)=>(
                 <MovieCard key={movie.id} movie={movie} genres={genres}/>
               ))}
@@ -277,14 +277,14 @@ const App = () => {
         {/* <button className='mt-6 w-full bg-light-200 text-white py-2 rounded-lg hover:bg-primary transition cursor-pointer' onClick={data.pages+1}>Load More</button> */}
         <div className='flex justify-center gap-4'>
           <button
-            className='prev mt-6 w-20 bg-light-200 text-white py-2 rounded-lg hover:bg-primary transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            className='prev mt-6 w-20  text-white py-2 rounded-lg hover:text-gray-300 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
           >
             Previous
           </button>
           <button
-            className='next mt-6 w-20 bg-light-200 text-white py-2 rounded-lg hover:bg-primary transition cursor-pointer'
+            className='next mt-6 w-20  text-white py-2 rounded-lg hover:text-gray-300 transition cursor-pointer'
             onClick={() => setPage((prev) => prev + 1)}
           >
             Next

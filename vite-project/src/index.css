@@ -85,7 +85,7 @@
     }
 
     & img {
-      @apply absolute left-2 h-5 w-5;
+      @apply absolute left-2 w-1 h-1 object-contain;
     }
 
     & input {
@@ -102,29 +102,32 @@
   }
 
     .movie-card {
-      @apply relative w-[250px] h-[380px] perspective;
-    }
+  @apply relative w-full aspect-[2/3];
+}
 
     .card-inner {
       @apply relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d];
     }
 
-    /* Hover flip (for laptops/desktops) */
-    .movie-card:hover .card-inner {
-      @apply [transform:rotateY(180deg)];
+    @media (hover: hover) and (pointer: fine) {
+      .movie-card:hover .card-inner {
+        @apply [transform:rotateY(180deg)];
+      }
     }
+  }
+
 
     .front,
     .back {
-      @apply absolute inset-0 rounded-2xl p-5 backface-hidden;
+      @apply absolute inset-0 rounded-2xl p-5 ;
+    }
+    .front{
+      @apply bg-dark-100 flex flex-col;
     }
 
-    .front {
-      @apply bg-dark-100;
-    }
-
+    
     .back {
-      @apply bg-dark-200 [transform:rotateY(180deg)] flex flex-col;
+      @apply backdrop-blur-md [transform:rotateY(180deg)] flex flex-col;
     }
 
 
@@ -163,7 +166,7 @@
   & .content .year {
     @apply text-gray-100 font-medium text-base;
   }
-}
+
 
 @utility text-gradient {
   @apply bg-linear-to-r from-[#D6C7FF] to-[#AB8BFF] bg-clip-text text-transparent;
