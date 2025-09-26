@@ -105,7 +105,7 @@ const App = () => {
       await updateSearchCount(query, data.results[0]);
     }
 
-    console.log("Fetched Movies:", data);
+    // console.log("Fetched Movies:", data);
   } catch (error) {
     console.error("Error fetching movies:", error);
     setErrorMessage("Error fetching movies. Please try again later.");
